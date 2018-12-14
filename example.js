@@ -1,10 +1,16 @@
-const { createAccount, changePassword, saveData } = require('./index');
+const { createAccount, changePassword, saveData, init } = require('./index');
 
 function createAccountInBC() {
   const password = '123';
-  const account = createAccount(password);
-  console.log('Account created:');
-  console.log(account);
+
+  createAccount(password)
+    .then(account => {
+      console.log('Account created');
+      console.log(account);
+    })
+    .catch(error => {
+      console.log(error);
+    });
 }
 
 function changePasswordInBC() {
@@ -29,16 +35,27 @@ function changePasswordInBC() {
     version: 3
   };
   const newPassword = 'new123';
-
-  const account = changePassword(oldPassword, privateKeyObj, newPassword);
-  console.log('Password changed');
-  console.log(account);
+  changePassword(oldPassword, privateKeyObj, newPassword)
+    .then(account => {
+      console.log('Password changed');
+      console.log(account);
+    })
+    .catch(error => {
+      console.log(error);
+    });
 }
 
 function saveTransactionInBC() {
   saveData({ test: '132' }, 1);
 }
 
-// createAccountInBC();
+createAccountInBC();
 // changePasswordInBC();
-saveTransactionInBC();
+// init({
+//   web3Url: 'https://ropsten.infura.io/qe93eRW1ZLx44WsdN2wh',
+//   ownerAddress: '0x633642C036DB81FB7a726a37A8B42254556B56F0',
+//   contractAddress: '0x95D7176f14d5427EFaAc264873895D348D132EeA',
+//   keystorePath: './',
+//   password: '12345678'
+// });
+// saveTransactionInBC();
