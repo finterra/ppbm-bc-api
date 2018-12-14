@@ -27,46 +27,59 @@ function init({
   });
 }
 
-async function signTransaction(from, to, functionData, resolve, reject) {
+function signTransaction(from, to, functionData, callback) {
   const gasObj = {
     to,
     from,
     data: functionData
   };
+  const gasPricePromise = web3.eth.getGasPrice();
+  const estimateGasPromise = web3.eth.estimateGas(gasObj);
+  const geBalancePromise = web3.eth.getBalance(from);
+  const noncePromise = web3.eth.getTransactionCount(from);
+  Promise.all([
+    gasPricePromise,
+    estimateGasPromise,
+    geBalancePromise,
+    noncePromise
+  ])
+    .then(values => {
+      console.log(values);
+      const gasPrice = new BigNumber(values[0]);
+      let gasEstimate = new BigNumber(values[1]);
+      const balance = new BigNumber(values[2]);
+      const nonce = values[3];
+      console.log('functionData', functionData);
 
-  var gasPrice = await web3.eth.getGasPrice();
-  gasPrice = new BigNumber(gasPrice);
-  var gasEstimate = await web3.eth.estimateGas(gasObj);
-  gasEstimate = new BigNumber(gasEstimate);
-  var balance = await web3.eth.getBalance(from);
-  balance = new BigNumber(balance);
-
-  if (balance.isLessThan(gasEstimate.times(gasPrice))) {
-    reject("Account doesn't have enough ether to make this transaction");
-  } else {
-    const nonce = await web3.eth.getTransactionCount(from);
-    const tx = new Tx({
-      to,
-      nonce,
-      value: '0x',
-      gasPrice: web3.utils.toHex(gasPrice.toString()),
-      gasLimit: web3.utils.toHex(gasEstimate.plus(200000).toString()),
-      data: functionData
+      if (balance.isLessThan(gasEstimate.times(gasPrice))) {
+        callback("Account doesn't have enough ether to make this transaction");
+      } else {
+        const tx = new Tx({
+          to,
+          nonce: nonce,
+          value: '0x',
+          gasPrice: web3.utils.toHex(gasPrice.toString()),
+          gasLimit: web3.utils.toHex(gasEstimate.plus(200000).toString()),
+          data: functionData
+        });
+        tx.sign(privateKey);
+        web3.eth
+          .sendSignedTransaction('0x' + tx.serialize().toString('hex'))
+          .on('transactionHash', hash => {
+            console.log('transaction hash', hash);
+          })
+          .on('receipt', receipt => {
+            callback(null, receipt);
+          })
+          .on('error', error => {
+            callback(error.toString());
+          });
+      }
+    })
+    .catch(error => {
+      console.log('error', error);
+      callback(error);
     });
-    tx.sign(privateKey);
-    web3.eth
-      .sendSignedTransaction('0x' + tx.serialize().toString('hex'))
-      .on('transactionHash', hash => {
-        console.log('transaction hash', hash);
-      })
-      .on('receipt', receipt => {
-        console.log('receipt', receipt);
-        resolve([receipt]);
-      })
-      .on('error', error => {
-        reject(error.toString());
-      });
-  }
 }
 
 function saveData(dataObj, type) {
@@ -75,17 +88,15 @@ function saveData(dataObj, type) {
       const sha3 = web3.utils.sha3(JSON.stringify(dataObj));
       let data = contractObj.methods.saveData(sha3, type).encodeABI();
       console.log(data);
-      signTransaction(_owner, _contractAddress, data, resolve, reject).then(
-        function(error, response) {
-          if (error) {
-            reject(error);
-          } else {
-            return resolve('Successful', response);
-          }
+      signTransaction(_owner, _contractAddress, data, (error, response) => {
+        if (error) {
+          return reject(error);
+        } else {
+          return resolve(response);
         }
-      );
+      });
     } catch (error) {
-      reject(error);
+      return reject(error);
     }
   });
 }
