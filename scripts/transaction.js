@@ -95,17 +95,6 @@ function saveData(dataObj, type, userId, userAddress, privateKeyObj, password) {
       const { messageHash, v, r, s } = signatureObj;
       const _modifierAddress = '0x' + address;
       const _uniqueId = web3.utils.toHex(userId);
-      // console.log(signatureObj);
-      // console.log(
-      //   type,
-      //   messageHash,
-      //   parseInt(v, 16),
-      //   r,
-      //   s,
-      //   _uniqueId,
-      //   userAddress,
-      //   _modifierAddress
-      // );
 
       let data = contractObj.methods
         .saveData(
