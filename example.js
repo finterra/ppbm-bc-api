@@ -68,10 +68,10 @@ function saveTransactionInBC() {
   const password = '123';
   saveData(
     { test: 'testing' },
-    2,
+    1,
     'userId',
-    // '0x3023427da0f663358f77026add8924b42cb9d332',
-    '0x0272333daa8Fe5f5895c39919cCb87bF3917fd9E',
+    '0x3023427da0f663358f77026add8924b42cb9d332',
+    // '0x0272333daa8Fe5f5895c39919cCb87bF3917fd9E',
     privateKeyObj,
     password
   )
