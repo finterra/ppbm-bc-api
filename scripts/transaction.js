@@ -34,7 +34,7 @@ function signTransaction(from, to, functionData, callback) {
     data: functionData
   };
   const gasPricePromise = web3.eth.getGasPrice();
-  const estimateGasPromise = web3.eth.estimateGas(gasObj);
+  const estimateGasPromise = web3.eth.estimateGas({ gasObj });
   const geBalancePromise = web3.eth.getBalance(from);
   const noncePromise = web3.eth.getTransactionCount(from);
   Promise.all([
@@ -82,12 +82,44 @@ function signTransaction(from, to, functionData, callback) {
     });
 }
 
-function saveData(dataObj, type) {
+function saveData(dataObj, type, userId, userAddress, privateKeyObj, password) {
   return new Promise(async (resolve, reject) => {
     try {
-      const sha3 = web3.utils.sha3(JSON.stringify(dataObj));
-      let data = contractObj.methods.saveData(sha3, type).encodeABI();
-      console.log(data);
+      const { address } = privateKeyObj;
+      const privateKeyBuffer = keythereum.recover(password, privateKeyObj);
+      const message = JSON.stringify(dataObj);
+      const privateKey = '0x'+privateKeyBuffer.toString('hex')
+      const signatureObj = web3.eth.accounts.sign('message', privateKey);
+      const result = web3.eth.accounts.recover(signatureObj);
+
+      const { messageHash, v, r, s } = signatureObj;
+      const _modifierAddress = '0x' + address;
+      const _uniqueId = web3.utils.toHex(userId);
+      // console.log(signatureObj);
+      // console.log(
+      //   type,
+      //   messageHash,
+      //   parseInt(v, 16),
+      //   r,
+      //   s,
+      //   _uniqueId,
+      //   userAddress,
+      //   _modifierAddress
+      // );
+
+      let data = contractObj.methods
+        .saveData(
+          type,
+          messageHash,
+          parseInt(v, 16),
+          r,
+          s,
+          _uniqueId,
+          userAddress,
+          _modifierAddress
+        )
+        .encodeABI();
+      console.log('_contractAddress', _contractAddress);
       signTransaction(_owner, _contractAddress, data, (error, response) => {
         if (error) {
           return reject(error);
