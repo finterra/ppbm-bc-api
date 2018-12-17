@@ -85,41 +85,59 @@ function signTransaction(from, to, functionData, callback) {
 function saveData(dataObj, type, userId, userAddress, privateKeyObj, password) {
   return new Promise(async (resolve, reject) => {
     try {
-      const { address } = privateKeyObj;
-      const privateKeyBuffer = keythereum.recover(password, privateKeyObj);
-      const message = JSON.stringify(dataObj);
-      const privateKey = '0x'+privateKeyBuffer.toString('hex')
-      const signatureObj = web3.eth.accounts.sign('message', privateKey);
-      const result = web3.eth.accounts.recover(signatureObj);
+      contractObj.methods
+        .whitelist(userAddress)
+        .call()
+        .then(isWhiteListed => {
+          if (isWhiteListed) {
+            const { address } = privateKeyObj;
+            const privateKeyBuffer = keythereum.recover(
+              password,
+              privateKeyObj
+            );
+            const message = JSON.stringify(dataObj);
+            const privateKey = '0x' + privateKeyBuffer.toString('hex');
+            const signatureObj = web3.eth.accounts.sign('message', privateKey);
+            const result = web3.eth.accounts.recover(signatureObj);
 
-      const { messageHash, v, r, s } = signatureObj;
-      const _modifierAddress = '0x' + address;
-      const _uniqueId = web3.utils.toHex(userId);
+            const { messageHash, v, r, s } = signatureObj;
+            const _modifierAddress = '0x' + address;
+            const _uniqueId = web3.utils.toHex(userId);
 
-      let data = contractObj.methods
-        .saveData(
-          type,
-          messageHash,
-          parseInt(v, 16),
-          r,
-          s,
-          _uniqueId,
-          userAddress,
-          _modifierAddress
-        )
-        .encodeABI();
-      console.log('_contractAddress', _contractAddress);
-      signTransaction(_owner, _contractAddress, data, (error, response) => {
-        if (error) {
-          return reject(error);
-        } else {
-          return resolve(response);
-        }
-      });
+            let data = contractObj.methods
+              .saveData(
+                type,
+                messageHash,
+                parseInt(v, 16),
+                r,
+                s,
+                _uniqueId,
+                userAddress,
+                _modifierAddress
+              )
+              .encodeABI();
+            console.log('_contractAddress', _contractAddress);
+            signTransaction(
+              _owner,
+              _contractAddress,
+              data,
+              (error, response) => {
+                if (error) {
+                  return reject(error);
+                } else {
+                  return resolve(response);
+                }
+              }
+            );
+          } else {
+            return reject('Given address should be white listed.');
+          }
+        }).catch(()=>reject(error));
     } catch (error) {
       return reject(error);
     }
   });
 }
+
 
 module.exports = { init, saveData };

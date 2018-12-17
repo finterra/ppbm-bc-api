@@ -30,4 +30,8 @@ function changePassword(oldPassword, privateKeyObj, newPassword) {
   });
 }
 
+function addToWhiteList(arrayOfAddress) {
+  
+}
+
 module.exports = { createAccount, changePassword };
