@@ -46,6 +46,15 @@ function changePasswordInBC() {
 }
 
 function saveTransactionInBC() {
+
+  const dataJSON = { test: 'testing' };
+  const dataType = 1; // 1 = user info, TBD for others
+  // preparing userObj
+  const userObj = {
+    userId: 'IN12323',
+    userAddress: '0x3023427da0f663358f77026add8924b42cb9d332' // '0x0272333daa8Fe5f5895c39919cCb87bF3917fd9E',
+  };
+  // preparing loginObject
   const privateKeyObj = {
     address: '3023427da0f663358f77026add8924b42cb9d332',
     crypto: {
@@ -66,15 +75,13 @@ function saveTransactionInBC() {
     version: 3
   };
   const password = '123';
-  saveData(
-    { test: 'testing' },
-    1,
-    'userId',
-    '0x3023427da0f663358f77026add8924b42cb9d332',
-    // '0x0272333daa8Fe5f5895c39919cCb87bF3917fd9E',
-    privateKeyObj,
-    password
-  )
+  const loginObject = {
+    password,
+    privateKeyObj
+  };
+
+  // save data in blockchain
+  saveData(dataJSON, 1, userObj, loginObject)
     .then(data => {
       console.log('saveData done');
       console.log(data);

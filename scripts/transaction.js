@@ -82,7 +82,7 @@ function signTransaction(from, to, functionData, callback) {
     });
 }
 
-function saveData(dataObj, type, userId, userAddress, privateKeyObj, password) {
+function saveData(dataObj, type, {userId, userAddress}, {privateKeyObj, password}) {
   return new Promise(async (resolve, reject) => {
     try {
       const { address } = privateKeyObj;
