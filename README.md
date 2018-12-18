@@ -15,6 +15,10 @@ A node module to interact with blockchain for fmms project
     Copy past keystore file in `keystore` folder.
 - Add abi in root folder
 
+Sample folder structure after adding keystore and abi:
+
+![alt text](https://i.ibb.co/5KYBbGj/Screenshot-2018-12-18-at-7-17-22-PM.png "folder structure")
+
 # Usage
 - ##### Init
 
