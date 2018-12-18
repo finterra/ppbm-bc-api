@@ -18,7 +18,7 @@ A node module to interact with blockchain for fmms project
 # Usage
 - ##### Init
 
-```
+```node
 const { init } = require('fmms');
 init({
   web3Url: 'https://ropsten.infura.io/<token>',
@@ -31,7 +31,7 @@ init({
 ```
 
 - ##### createAccount
-```
+```node
   const { createAccount } = require('fmms');
   const password = '123';
   createAccount(password)
@@ -44,7 +44,7 @@ init({
     });
 ```
 - ##### changePassword
-```
+```node
   const { changePassword } = require('fmms');
   const oldPassword = '123';
   const privateKeyObj = {...};
@@ -59,7 +59,7 @@ init({
     });
 ```
 - ##### saveData
-```
+```node
  const { saveData } = require('fmms');
   const dataJSON = { test: 'testing' };
   const dataType = 1; // 1 = user info, TBD for others
@@ -77,7 +77,7 @@ init({
   };
 
   // save data in blockchain
-  saveData(dataJSON, 1, userObj, loginObject)
+  saveData(dataJSON, dataType, userObj, loginObject)
     .then(data => {
       console.log('saveData done');
       console.log(data);
