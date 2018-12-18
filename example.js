@@ -97,7 +97,7 @@ init({
   web3Url: 'https://ropsten.infura.io/qe93eRW1ZLx44WsdN2wh',
   ownerAddress: '0x633642C036DB81FB7a726a37A8B42254556B56F0',
   keystorePath: './',
-  abi: require('./abi/ropsten-abi.json'),
+  abi: require('./fmms_abi/ropsten-abi.json'),
   password: '12345678',
   contractAddress: '0xcE3d3b82CaF3Fd6DaE25a65dE215b01547df7C26',
 });
