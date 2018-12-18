@@ -13,13 +13,12 @@ function init({
   ownerAddress,
   contractAddress,
   keystorePath,
-  password
+  password,
+  abi
 }) {
   web3 = new Web3(web3Url);
   _owner = ownerAddress;
   _contractAddress = contractAddress;
-  let abi = require('./abi/ropsten-abi.json');
-
   contractObj = new web3.eth.Contract(abi, _contractAddress);
 
   keythereum.importFromFile(_owner, keystorePath, function(keyObject) {
