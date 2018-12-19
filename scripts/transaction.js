@@ -81,54 +81,31 @@ function signTransaction(from, to, functionData, callback) {
     });
 }
 
-function saveData(dataObj, type, {userId, userAddress}, {privateKeyObj, password}) {
+function saveData(
+  dataObj,
+  type,
+  { userId, userAddress },
+  { privateKeyObj, password }
+) {
   return new Promise(async (resolve, reject) => {
     try {
       const { address } = privateKeyObj;
       const _modifierAddress = '0x' + address;
-      if (type === 1 && _modifierAddress === userAddress) {
-        _save(
-          dataObj,
-          type,
-          userId,
-          userAddress,
-          privateKeyObj,
-          password,
-          (error, response) => {
-            if (error) {
-              return reject(error);
-            } else {
-              return resolve(response);
-            }
+      _save(
+        dataObj,
+        type,
+        userId,
+        userAddress,
+        privateKeyObj,
+        password,
+        (error, response) => {
+          if (error) {
+            return reject(error);
+          } else {
+            return resolve(response);
           }
-        );
-      } else {
-        contractObj.methods
-          .whitelist(userAddress)
-          .call()
-          .then(isWhiteListed => {
-            if (isWhiteListed) {
-              _save(
-                dataObj,
-                type,
-                userId,
-                userAddress,
-                privateKeyObj,
-                password,
-                (error, response) => {
-                  if (error) {
-                    return reject(error);
-                  } else {
-                    return resolve(response);
-                  }
-                }
-              );
-            } else {
-              return reject('Given address should be white listed.');
-            }
-          })
-          .catch(() => reject(error));
-      }
+        }
+      );
     } catch (error) {
       return reject(error);
     }
