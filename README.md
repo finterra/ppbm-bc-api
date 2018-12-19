@@ -15,10 +15,14 @@ A node module to interact with blockchain for fmms project
     Copy past keystore file in `keystore` folder.
 - Add abi in root folder
 
+Sample folder structure after adding keystore and abi:
+
+![alt text](https://i.ibb.co/5KYBbGj/Screenshot-2018-12-18-at-7-17-22-PM.png "folder structure")
+
 # Usage
 - ##### Init
 
-```
+```node
 const { init } = require('fmms');
 init({
   web3Url: 'https://ropsten.infura.io/<token>',
@@ -31,7 +35,7 @@ init({
 ```
 
 - ##### createAccount
-```
+```node
   const { createAccount } = require('fmms');
   const password = '123';
   createAccount(password)
@@ -44,7 +48,7 @@ init({
     });
 ```
 - ##### changePassword
-```
+```node
   const { changePassword } = require('fmms');
   const oldPassword = '123';
   const privateKeyObj = {...};
@@ -59,7 +63,7 @@ init({
     });
 ```
 - ##### saveData
-```
+```node
  const { saveData } = require('fmms');
   const dataJSON = { test: 'testing' };
   const dataType = 1; // 1 = user info, TBD for others
@@ -77,7 +81,7 @@ init({
   };
 
   // save data in blockchain
-  saveData(dataJSON, 1, userObj, loginObject)
+  saveData(dataJSON, dataType, userObj, loginObject)
     .then(data => {
       console.log('saveData done');
       console.log(data);
