@@ -26,7 +26,7 @@ function init({
   contractObj = new web3.eth.Contract(abi, _contractAddress);
   privateKey = keythereum.recover(password, keystoreObj);
   _gasPrice = bufferGasPrice ? bufferGasPrice : 0;
-  _gasLimit bufferGasLimit ? bufferGasLimit : 50000; 
+  _gasLimit = bufferGasLimit ? bufferGasLimit : 50000;
   // keythereum.importFromFile(_owner, keystorePath, function(keyObject) {
   //   privateKey = keythereum.recover(password, keyObject);
   // });
