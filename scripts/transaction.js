@@ -66,9 +66,7 @@ function signTransaction(from, to, functionData, callback) {
           .sendSignedTransaction('0x' + tx.serialize().toString('hex'))
           .on('transactionHash', hash => {
             console.log('transaction hash', hash);
-          })
-          .on('receipt', receipt => {
-            callback(null, receipt);
+            callback(null, hash);
           })
           .on('error', error => {
             callback(error.toString());
