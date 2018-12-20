@@ -146,4 +146,8 @@ function _save(
   signTransaction(_owner, _contractAddress, data, cb);
 }
 
-module.exports = { init, saveData };
+function getTransactionReceipt(tx) {
+  return web3.eth.getTransactionReceipt(tx);
+}
+
+module.exports = { init, saveData, getTransactionReceipt };
