@@ -7,6 +7,8 @@ const Web3 = require('web3');
 let web3, _owner, _contractAddress;
 let privateKey;
 let contractObj;
+let _gasPrice;
+let _gasLimit;
 
 function init({
   web3Url,
@@ -14,13 +16,17 @@ function init({
   contractAddress,
   keystoreObj,
   password,
-  abi
+  abi,
+  bufferGasPrice,
+  bufferGasLimit
 }) {
   web3 = new Web3(web3Url);
   _owner = ownerAddress;
   _contractAddress = contractAddress;
   contractObj = new web3.eth.Contract(abi, _contractAddress);
   privateKey = keythereum.recover(password, keystoreObj);
+  _gasPrice = bufferGasPrice ? bufferGasPrice : 0;
+  _gasLimit bufferGasLimit ? bufferGasLimit : 50000; 
   // keythereum.importFromFile(_owner, keystorePath, function(keyObject) {
   //   privateKey = keythereum.recover(password, keyObject);
   // });
@@ -57,8 +63,8 @@ function signTransaction(from, to, functionData, callback) {
           to,
           nonce: nonce,
           value: '0x',
-          gasPrice: web3.utils.toHex(gasPrice.toString()),
-          gasLimit: web3.utils.toHex(gasEstimate.plus(200000).toString()),
+          gasPrice: web3.utils.toHex(gasPrice.plus(_gasPrice).toString()),
+          gasLimit: web3.utils.toHex(gasEstimate.plus(_gasLimit).toString()),
           data: functionData
         });
         tx.sign(privateKey);
