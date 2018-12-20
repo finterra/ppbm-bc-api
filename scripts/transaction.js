@@ -12,7 +12,7 @@ function init({
   web3Url,
   ownerAddress,
   contractAddress,
-  keystorePath,
+  keystoreObj,
   password,
   abi
 }) {
@@ -20,10 +20,10 @@ function init({
   _owner = ownerAddress;
   _contractAddress = contractAddress;
   contractObj = new web3.eth.Contract(abi, _contractAddress);
-
-  keythereum.importFromFile(_owner, keystorePath, function(keyObject) {
-    privateKey = keythereum.recover(password, keyObject);
-  });
+  privateKey = keythereum.recover(password, keystoreObj);
+  // keythereum.importFromFile(_owner, keystorePath, function(keyObject) {
+  //   privateKey = keythereum.recover(password, keyObject);
+  // });
 }
 
 function signTransaction(from, to, functionData, callback) {
